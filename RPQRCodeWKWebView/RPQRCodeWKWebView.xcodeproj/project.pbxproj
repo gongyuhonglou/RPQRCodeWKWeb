@@ -17,9 +17,6 @@
 		0413B8CA207C98A400A2A9E9 /* RPQRCodeWKWebViewUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0413B8C9207C98A400A2A9E9 /* RPQRCodeWKWebViewUITests.m */; };
 		0413B8D9207C995900A2A9E9 /* ADWebViewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0413B8D8207C995900A2A9E9 /* ADWebViewViewController.m */; };
 		0413B8DC207C99B000A2A9E9 /* WeakScriptMessageDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0413B8DB207C99B000A2A9E9 /* WeakScriptMessageDelegate.m */; };
-		0413B8DF207C9A3800A2A9E9 /* RPLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0413B8DE207C9A3800A2A9E9 /* RPLabel.m */; };
-		0413B8E2207C9D8F00A2A9E9 /* NSObject+UserDefined.m in Sources */ = {isa = PBXBuildFile; fileRef = 0413B8E1207C9D8E00A2A9E9 /* NSObject+UserDefined.m */; };
-		0413B8E6207C9E7300A2A9E9 /* UIColor+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 0413B8E5207C9E7300A2A9E9 /* UIColor+Extension.m */; };
 		0413B8EC207C9F5C00A2A9E9 /* MBProgressHUD+Add.m in Sources */ = {isa = PBXBuildFile; fileRef = 0413B8E9207C9F5C00A2A9E9 /* MBProgressHUD+Add.m */; };
 		0413B8ED207C9F5C00A2A9E9 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 0413B8EB207C9F5C00A2A9E9 /* MBProgressHUD.m */; };
 		0413B8FC207CA1C600A2A9E9 /* RomAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0413B8F0207CA1C600A2A9E9 /* RomAlertView.m */; };
@@ -33,6 +30,10 @@
 		0413B91F207CB3E200A2A9E9 /* 3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0413B91A207CB3E200A2A9E9 /* 3.jpg */; };
 		0413B920207CB3E200A2A9E9 /* 4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0413B91B207CB3E200A2A9E9 /* 4.jpg */; };
 		0413B921207CB3E200A2A9E9 /* 5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0413B91C207CB3E200A2A9E9 /* 5.jpg */; };
+		04163C422085CBC70074E974 /* UIColor+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04163C3F2085CBC70074E974 /* UIColor+Extension.m */; };
+		04163C432085CBC70074E974 /* NSObject+UserDefined.m in Sources */ = {isa = PBXBuildFile; fileRef = 04163C402085CBC70074E974 /* NSObject+UserDefined.m */; };
+		04163C442085CBC70074E974 /* RPLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04163C412085CBC70074E974 /* RPLabel.m */; };
+		04163C472085CC180074E974 /* UIImage+InsetEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = 04163C452085CC180074E974 /* UIImage+InsetEdge.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,13 +74,7 @@
 		0413B8D8207C995900A2A9E9 /* ADWebViewViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ADWebViewViewController.m; sourceTree = "<group>"; };
 		0413B8DA207C99B000A2A9E9 /* WeakScriptMessageDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeakScriptMessageDelegate.h; sourceTree = "<group>"; };
 		0413B8DB207C99B000A2A9E9 /* WeakScriptMessageDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WeakScriptMessageDelegate.m; sourceTree = "<group>"; };
-		0413B8DD207C9A3800A2A9E9 /* RPLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RPLabel.h; sourceTree = "<group>"; };
-		0413B8DE207C9A3800A2A9E9 /* RPLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RPLabel.m; sourceTree = "<group>"; };
-		0413B8E0207C9D8E00A2A9E9 /* NSObject+UserDefined.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+UserDefined.h"; sourceTree = "<group>"; };
-		0413B8E1207C9D8E00A2A9E9 /* NSObject+UserDefined.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+UserDefined.m"; sourceTree = "<group>"; };
 		0413B8E3207C9DE000A2A9E9 /* Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
-		0413B8E4207C9E7300A2A9E9 /* UIColor+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+Extension.h"; sourceTree = "<group>"; };
-		0413B8E5207C9E7300A2A9E9 /* UIColor+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Extension.m"; sourceTree = "<group>"; };
 		0413B8E8207C9F5C00A2A9E9 /* MBProgressHUD+Add.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MBProgressHUD+Add.h"; sourceTree = "<group>"; };
 		0413B8E9207C9F5C00A2A9E9 /* MBProgressHUD+Add.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MBProgressHUD+Add.m"; sourceTree = "<group>"; };
 		0413B8EA207C9F5C00A2A9E9 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
@@ -102,6 +97,14 @@
 		0413B91A207CB3E200A2A9E9 /* 3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 3.jpg; sourceTree = "<group>"; };
 		0413B91B207CB3E200A2A9E9 /* 4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 4.jpg; sourceTree = "<group>"; };
 		0413B91C207CB3E200A2A9E9 /* 5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 5.jpg; sourceTree = "<group>"; };
+		04163C3C2085CBC70074E974 /* UIColor+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Extension.h"; sourceTree = "<group>"; };
+		04163C3D2085CBC70074E974 /* RPLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPLabel.h; sourceTree = "<group>"; };
+		04163C3E2085CBC70074E974 /* NSObject+UserDefined.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+UserDefined.h"; sourceTree = "<group>"; };
+		04163C3F2085CBC70074E974 /* UIColor+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Extension.m"; sourceTree = "<group>"; };
+		04163C402085CBC70074E974 /* NSObject+UserDefined.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+UserDefined.m"; sourceTree = "<group>"; };
+		04163C412085CBC70074E974 /* RPLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPLabel.m; sourceTree = "<group>"; };
+		04163C452085CC180074E974 /* UIImage+InsetEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+InsetEdge.m"; sourceTree = "<group>"; };
+		04163C462085CC180074E974 /* UIImage+InsetEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+InsetEdge.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,12 +166,7 @@
 				0413B8D8207C995900A2A9E9 /* ADWebViewViewController.m */,
 				0413B8DA207C99B000A2A9E9 /* WeakScriptMessageDelegate.h */,
 				0413B8DB207C99B000A2A9E9 /* WeakScriptMessageDelegate.m */,
-				0413B8DD207C9A3800A2A9E9 /* RPLabel.h */,
-				0413B8DE207C9A3800A2A9E9 /* RPLabel.m */,
-				0413B8E0207C9D8E00A2A9E9 /* NSObject+UserDefined.h */,
-				0413B8E1207C9D8E00A2A9E9 /* NSObject+UserDefined.m */,
-				0413B8E4207C9E7300A2A9E9 /* UIColor+Extension.h */,
-				0413B8E5207C9E7300A2A9E9 /* UIColor+Extension.m */,
+				04163C3B2085CBC70074E974 /* Tools */,
 				0413B8E3207C9DE000A2A9E9 /* Header.h */,
 				0413B8AB207C98A400A2A9E9 /* Main.storyboard */,
 				0413B8AE207C98A400A2A9E9 /* Assets.xcassets */,
@@ -238,6 +236,21 @@
 				0413B91C207CB3E200A2A9E9 /* 5.jpg */,
 			);
 			path = img;
+			sourceTree = "<group>";
+		};
+		04163C3B2085CBC70074E974 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				04163C3D2085CBC70074E974 /* RPLabel.h */,
+				04163C412085CBC70074E974 /* RPLabel.m */,
+				04163C3E2085CBC70074E974 /* NSObject+UserDefined.h */,
+				04163C402085CBC70074E974 /* NSObject+UserDefined.m */,
+				04163C3C2085CBC70074E974 /* UIColor+Extension.h */,
+				04163C3F2085CBC70074E974 /* UIColor+Extension.m */,
+				04163C462085CC180074E974 /* UIImage+InsetEdge.h */,
+				04163C452085CC180074E974 /* UIImage+InsetEdge.m */,
+			);
+			path = Tools;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -381,18 +394,19 @@
 				0413B8FF207CA1C600A2A9E9 /* RomCustomMaskView.m in Sources */,
 				0413B901207CA1C600A2A9E9 /* ZXRomUIAlertTool.m in Sources */,
 				0413B8AA207C98A400A2A9E9 /* ViewController.m in Sources */,
+				04163C422085CBC70074E974 /* UIColor+Extension.m in Sources */,
 				0413B8D9207C995900A2A9E9 /* ADWebViewViewController.m in Sources */,
-				0413B8DF207C9A3800A2A9E9 /* RPLabel.m in Sources */,
 				0413B8FD207CA1C600A2A9E9 /* RomCustomAlertViewCell.m in Sources */,
+				04163C442085CBC70074E974 /* RPLabel.m in Sources */,
 				0413B8FC207CA1C600A2A9E9 /* RomAlertView.m in Sources */,
-				0413B8E6207C9E7300A2A9E9 /* UIColor+Extension.m in Sources */,
 				0413B8FE207CA1C600A2A9E9 /* RomCustomAlertViewTableVC.m in Sources */,
+				04163C432085CBC70074E974 /* NSObject+UserDefined.m in Sources */,
 				0413B8EC207C9F5C00A2A9E9 /* MBProgressHUD+Add.m in Sources */,
 				0413B8B5207C98A400A2A9E9 /* main.m in Sources */,
-				0413B8E2207C9D8F00A2A9E9 /* NSObject+UserDefined.m in Sources */,
 				0413B8ED207C9F5C00A2A9E9 /* MBProgressHUD.m in Sources */,
 				0413B8A7207C98A400A2A9E9 /* AppDelegate.m in Sources */,
 				0413B8DC207C99B000A2A9E9 /* WeakScriptMessageDelegate.m in Sources */,
+				04163C472085CC180074E974 /* UIImage+InsetEdge.m in Sources */,
 				0413B900207CA1C600A2A9E9 /* ZXRomShareButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -30,7 +30,7 @@
     
     self.title = @"长按图片识别二维码";
     
-    img = [[UIImageView alloc] initWithFrame: CGRectMake(50, 64+50, 200, 400)];
+    img = [[UIImageView alloc] initWithFrame: CGRectMake(50, 64+50, 240, 400)];
     img.image = [UIImage imageNamed:@"3.jpg"];//2.jpg,3.jpg,4.jpg,5.jpg
     img.userInteractionEnabled = YES;
     [self.view addSubview:img];

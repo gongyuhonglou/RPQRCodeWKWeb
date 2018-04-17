@@ -10,7 +10,7 @@
 #import "WeakScriptMessageDelegate.h"
 
 
-@interface ADWebViewViewController ()<WKNavigationDelegate,WKUIDelegate,WKScriptMessageHandler,MBProgressHUDDelegate>
+@interface ADWebViewViewController ()<WKNavigationDelegate,WKUIDelegate,WKScriptMessageHandler,MBProgressHUDDelegate,RomAlertViewDelegate,UIGestureRecognizerDelegate>
 {
     WKWebView *_detailWebView;
     
@@ -21,6 +21,10 @@
     UIButton *closeButton;
     NSString *QRurlStr;
     RPLabel *QRCodeLabel;
+    
+    RomAlertView *alertview;
+    UIImage *_saveImage;
+    NSString *qrCodeUrl;
 }
 
 @property (nonatomic,strong)    UIView *topView;//顶部的view
@@ -139,6 +143,11 @@
     _detailWebView.backgroundColor=[UIColor clearColor];
     [self.view addSubview:_detailWebView];
     
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+    longPress.minimumPressDuration = 1;
+    longPress.delegate = self;
+    [_detailWebView addGestureRecognizer:longPress];
+    
     
     WKUserContentController *userCC = wkConfig.userContentController;
     
@@ -148,20 +157,26 @@
     
     // 识别二维码跳转;不是链接显示内容点击网址跳转
     if ([self.m_url hasPrefix:@"http"]) {
-        NSString *urlStr = [self.m_url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSURL *url =[NSURL URLWithString:urlStr];
+        // 解决url包含中文不能编码的问题
+        NSString *urlStr = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(CFStringRef)self.m_url,(CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]",NULL,kCFStringEncodingUTF8));
+        NSURL *url = [NSURL URLWithString:urlStr];
         NSMutableURLRequest *request =[NSMutableURLRequest requestWithURL:url];
         [request setHTTPShouldHandleCookies:YES];
         [_detailWebView loadRequest:request];
         
     } else {
         self.topTitleLabel.text = @"扫描结果";
-        QRCodeLabel = [[RPLabel alloc]initWithFrame:CGRectMake(10, 10, __gScreenWidth-20, 50) fontSize:16 text:[NSString stringWithFormat:@"%@",self.m_url] textColor:[UIColor colorWithHexString:@"#000000"] textAlignment:NSTextAlignmentLeft numberOfLines:0];
+        
+        QRCodeLabel = [[RPLabel alloc]initWithFrame:CGRectMake(10, 10, SCREENWIDTH-20, 50) fontSize:16 text:@"" textColor:[UIColor colorWithHexString:@"#000000"] textAlignment:NSTextAlignmentLeft numberOfLines:0];
         [_detailWebView addSubview:QRCodeLabel];
         
-        if ([self urlValidation:QRCodeLabel.text]==YES) {
+        if ([self urlValidation:[NSString stringWithFormat:@"%@",self.m_url]]==YES) {//网址
             [self textColour];
-            QRurlStr = [NSString stringWithFormat:@"http://%@",QRCodeLabel.text];
+            QRurlStr = [NSString stringWithFormat:@"http://%@",[NSString stringWithFormat:@"%@",self.m_url]];
+        } else {
+            // 文字html可拷贝，查询
+            QRurlStr = [NSString stringWithFormat:@"<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'><style>*{margin:5px;padding:0px;}</style><title></title></head<body>%@</body></html>",[NSString stringWithFormat:@"%@",self.m_url]];
+            [_detailWebView loadHTMLString:QRurlStr  baseURL:Nil];
         }
     }
     
@@ -317,6 +332,9 @@
             [self presentViewController:alertController animated:YES completion:nil];
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
+        } else {
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
         }
     }
     decisionHandler(WKNavigationActionPolicyAllow);
@@ -354,6 +372,9 @@
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation
 {
     NSLog(@"didFinish: %@; stillLoading:%@", [webView URL], (webView.loading?@"NO":@"YES"));
+    
+    // 不执行前段界面弹出列表的JS代码
+    [webView evaluateJavaScript:@"document.documentElement.style.webkitTouchCallout='none';" completionHandler:nil];
 }
 // 页面开始加载时调用
 - (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
@@ -490,6 +511,100 @@
 
 
 #pragma mark -- 识别图中二维码
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
+    return YES;
+}
+
+// 网页内长按识别二维码
+- (void)handleLongPress:(UILongPressGestureRecognizer *)sender{
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        
+        CGPoint touchPoint = [sender locationInView:_detailWebView];
+        // 获取长按位置对应的图片url的JS代码
+        NSString *imgJS = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).src", touchPoint.x, touchPoint.y];
+        // 执行对应的JS代码 获取url
+        [_detailWebView evaluateJavaScript:imgJS completionHandler:^(id _Nullable imgUrl, NSError * _Nullable error) {
+            if (imgUrl) {
+                NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imgUrl]];
+                UIImage *image = [UIImage imageWithData:data];
+                if (!image) {
+                    NSLog(@"读取图片失败");
+                    return;
+                }
+                _saveImage = image;
+                
+                CIImage *ciImage = [[CIImage alloc] initWithCGImage:image.CGImage options:nil];
+                CIContext *ciContext = [CIContext contextWithOptions:@{kCIContextUseSoftwareRenderer : @(YES)}]; // 软件渲染
+                CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:ciContext options:@{CIDetectorAccuracy : CIDetectorAccuracyHigh}];// 二维码识别
+                
+                NSArray *features = [detector featuresInImage:ciImage];
+                
+                if (features.count) {
+                    
+                    for (CIQRCodeFeature *feature in features) {
+                        NSLog(@"qrCodeUrl = %@",feature.messageString); // 打印二维码中的信息
+                        qrCodeUrl = feature.messageString;
+                    }
+                    [self filterPopViewWithTag:10002 WithTitleArray:[NSMutableArray arrayWithObjects:@"保存图片",@"识别图中二维码",nil]];
+                } else {
+                    NSLog(@"图片中没有二维码");
+                    [self filterPopViewWithTag:10001 WithTitleArray:[NSMutableArray arrayWithObjects:@"保存图片",nil]];
+                }
+            }
+        }];
+    }
+}
+
+-(void)filterPopViewWithTag:(int)tag WithTitleArray:(NSMutableArray *)titleArray
+{
+    // 初始化弹框 第一个参数是设置距离底部的边距
+    RomAlertView *alertview = [[RomAlertView alloc] initWithMainAlertViewBottomInset:0 Title:nil detailText:nil cancelTitle:nil otherTitles:titleArray];
+    alertview.tag = tag;
+    // 设置弹框的样式
+    alertview.RomMode = RomAlertViewModeBottomTableView;
+    // 设置弹框从什么位置进入 当然也可以设置什么位置退出
+    [alertview setEnterMode:RomAlertEnterModeBottom];
+    // 设置代理
+    [alertview setDelegate:self];
+    // 显示 必须调用 和系统一样
+    [alertview show];
+    
+}
+
+#pragma mark -- RomAlertViewDelegate 弹框识别图中二维码
+// 网页内部识别二维码
+- (void)alertview:(RomAlertView *)alertview didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (alertview.tag == 10001) {
+        if ([alertview.otherTitles[indexPath.row]  isEqualToString:@"保存图片"]) {
+            NSLog(@"保存图片");
+            UIImageWriteToSavedPhotosAlbum(_saveImage, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+        }
+    } else if (alertview.tag == 10002) {
+        if ([alertview.otherTitles[indexPath.row]  isEqualToString:@"保存图片"]) {
+            NSLog(@"保存图片");
+            UIImageWriteToSavedPhotosAlbum(_saveImage, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+        }else if ([alertview.otherTitles[indexPath.row] isEqualToString:@"识别图中二维码"]){
+            NSLog(@"识别图中二维码");
+            
+            ADWebViewViewController *controller = [[ADWebViewViewController alloc] init];
+            controller.m_url = qrCodeUrl;
+            controller.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:controller animated:YES];
+        }
+    }
+}
+
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+    NSString *message = @"Succeed";
+    if (error) {
+        message = @"Fail";
+    }
+    NSLog(@"save result :%@", message);
+}
+
+// app内部识别二维码
 /**
  *  网址正则验证
  *
@@ -511,14 +626,14 @@
 }
 
 - (void)textColour {
-    NSMutableAttributedString *abs = [[NSMutableAttributedString alloc]initWithString:QRCodeLabel.text];
+    NSMutableAttributedString *abs = [[NSMutableAttributedString alloc]initWithString:[NSString stringWithFormat:@"%@",self.m_url]];
     [abs beginEditing];
     //字体大小
     //        [abs addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:20.0] range:NSMakeRange(0, 2)];
     //字体颜色
-    [abs addAttribute:NSForegroundColorAttributeName value:[UIColor blueColor]  range:NSMakeRange(0, QRCodeLabel.text.length)];
+    [abs addAttribute:NSForegroundColorAttributeName value:[UIColor blueColor]  range:NSMakeRange(0, [NSString stringWithFormat:@"%@",self.m_url].length)];
     //下划线
-    [abs addAttribute:NSUnderlineStyleAttributeName  value:@(NSUnderlineStyleSingle) range:NSMakeRange(0, QRCodeLabel.text.length)];
+    [abs addAttribute:NSUnderlineStyleAttributeName  value:@(NSUnderlineStyleSingle) range:NSMakeRange(0, [NSString stringWithFormat:@"%@",self.m_url].length)];
     QRCodeLabel.attributedText = abs;
     UITapGestureRecognizer *LabelTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(capchaBtn:)];
     QRCodeLabel.userInteractionEnabled = YES;
@@ -529,7 +644,7 @@
 - (void)capchaBtn:(UITapGestureRecognizer *)sendr{
     NSLog(@"跳转网页~~");
     [QRCodeLabel removeFromSuperview];
-    NSString *urlStr = [QRurlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *urlStr = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(CFStringRef)QRurlStr,(CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]",NULL,kCFStringEncodingUTF8));
     NSURL *url =[NSURL URLWithString:urlStr];
     NSMutableURLRequest *request =[NSMutableURLRequest requestWithURL:url];
     [request setHTTPShouldHandleCookies:YES];
@@ -556,4 +671,3 @@
 }
 
 @end
-
