@@ -8,7 +8,8 @@
 
 #import "ADWebViewViewController.h"
 #import "WeakScriptMessageDelegate.h"
-
+#import <Photos/Photos.h>
+#import "UIView+Toast.h"
 
 @interface ADWebViewViewController ()<WKNavigationDelegate,WKUIDelegate,WKScriptMessageHandler,MBProgressHUDDelegate,RomAlertViewDelegate,UIGestureRecognizerDelegate>
 {
@@ -143,11 +144,8 @@
     _detailWebView.backgroundColor=[UIColor clearColor];
     [self.view addSubview:_detailWebView];
     
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-    longPress.minimumPressDuration = 1;
-    longPress.delegate = self;
-    [_detailWebView addGestureRecognizer:longPress];
-    
+    // 添加长按手势识别二维码
+    [self WKWebViewHandleLongPress:_detailWebView];
     
     WKUserContentController *userCC = wkConfig.userContentController;
     
@@ -175,7 +173,7 @@
             QRurlStr = [NSString stringWithFormat:@"http://%@",[NSString stringWithFormat:@"%@",self.m_url]];
         } else {
             // 文字html可拷贝，查询
-            QRurlStr = [NSString stringWithFormat:@"<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'><style>*{margin:5px;padding:0px;}</style><title></title></head<body>%@</body></html>",[NSString stringWithFormat:@"%@",self.m_url]];
+            QRurlStr = [NSString stringWithFormat:@"<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'><style>*{margin:5px;padding:0px;}</style><title></title></head<body><pre>%@</pre></body></html>",[NSString stringWithFormat:@"%@",self.m_url]];
             [_detailWebView loadHTMLString:QRurlStr  baseURL:Nil];
         }
     }
@@ -373,8 +371,8 @@
 {
     NSLog(@"didFinish: %@; stillLoading:%@", [webView URL], (webView.loading?@"NO":@"YES"));
     
-    // 不执行前段界面弹出列表的JS代码
-    [webView evaluateJavaScript:@"document.documentElement.style.webkitTouchCallout='none';" completionHandler:nil];
+    // 禁止系统的弹框，不执行前段界面弹出列表的JS代码
+    [self webkitTouchCallout:webView];
 }
 // 页面开始加载时调用
 - (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
@@ -512,98 +510,6 @@
 
 #pragma mark -- 识别图中二维码
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
-    return YES;
-}
-
-// 网页内长按识别二维码
-- (void)handleLongPress:(UILongPressGestureRecognizer *)sender{
-    if (sender.state == UIGestureRecognizerStateBegan) {
-        
-        CGPoint touchPoint = [sender locationInView:_detailWebView];
-        // 获取长按位置对应的图片url的JS代码
-        NSString *imgJS = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).src", touchPoint.x, touchPoint.y];
-        // 执行对应的JS代码 获取url
-        [_detailWebView evaluateJavaScript:imgJS completionHandler:^(id _Nullable imgUrl, NSError * _Nullable error) {
-            if (imgUrl) {
-                NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imgUrl]];
-                UIImage *image = [UIImage imageWithData:data];
-                if (!image) {
-                    NSLog(@"读取图片失败");
-                    return;
-                }
-                _saveImage = image;
-                
-                CIImage *ciImage = [[CIImage alloc] initWithCGImage:image.CGImage options:nil];
-                CIContext *ciContext = [CIContext contextWithOptions:@{kCIContextUseSoftwareRenderer : @(YES)}]; // 软件渲染
-                CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:ciContext options:@{CIDetectorAccuracy : CIDetectorAccuracyHigh}];// 二维码识别
-                
-                NSArray *features = [detector featuresInImage:ciImage];
-                
-                if (features.count) {
-                    
-                    for (CIQRCodeFeature *feature in features) {
-                        NSLog(@"qrCodeUrl = %@",feature.messageString); // 打印二维码中的信息
-                        qrCodeUrl = feature.messageString;
-                    }
-                    [self filterPopViewWithTag:10002 WithTitleArray:[NSMutableArray arrayWithObjects:@"保存图片",@"识别图中二维码",nil]];
-                } else {
-                    NSLog(@"图片中没有二维码");
-                    [self filterPopViewWithTag:10001 WithTitleArray:[NSMutableArray arrayWithObjects:@"保存图片",nil]];
-                }
-            }
-        }];
-    }
-}
-
--(void)filterPopViewWithTag:(int)tag WithTitleArray:(NSMutableArray *)titleArray
-{
-    // 初始化弹框 第一个参数是设置距离底部的边距
-    RomAlertView *alertview = [[RomAlertView alloc] initWithMainAlertViewBottomInset:0 Title:nil detailText:nil cancelTitle:nil otherTitles:titleArray];
-    alertview.tag = tag;
-    // 设置弹框的样式
-    alertview.RomMode = RomAlertViewModeBottomTableView;
-    // 设置弹框从什么位置进入 当然也可以设置什么位置退出
-    [alertview setEnterMode:RomAlertEnterModeBottom];
-    // 设置代理
-    [alertview setDelegate:self];
-    // 显示 必须调用 和系统一样
-    [alertview show];
-    
-}
-
-#pragma mark -- RomAlertViewDelegate 弹框识别图中二维码
-// 网页内部识别二维码
-- (void)alertview:(RomAlertView *)alertview didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (alertview.tag == 10001) {
-        if ([alertview.otherTitles[indexPath.row]  isEqualToString:@"保存图片"]) {
-            NSLog(@"保存图片");
-            UIImageWriteToSavedPhotosAlbum(_saveImage, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-        }
-    } else if (alertview.tag == 10002) {
-        if ([alertview.otherTitles[indexPath.row]  isEqualToString:@"保存图片"]) {
-            NSLog(@"保存图片");
-            UIImageWriteToSavedPhotosAlbum(_saveImage, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-        }else if ([alertview.otherTitles[indexPath.row] isEqualToString:@"识别图中二维码"]){
-            NSLog(@"识别图中二维码");
-            
-            ADWebViewViewController *controller = [[ADWebViewViewController alloc] init];
-            controller.m_url = qrCodeUrl;
-            controller.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:controller animated:YES];
-        }
-    }
-}
-
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
-    NSString *message = @"Succeed";
-    if (error) {
-        message = @"Fail";
-    }
-    NSLog(@"save result :%@", message);
-}
-
 // app内部识别二维码
 /**
  *  网址正则验证
@@ -668,6 +574,247 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+#pragma mark -- common WKWebView长按网页内部图片识别二维码
+-(void)WKWebViewHandleLongPress:(WKWebView *)webView {
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(webViewHandleLongPress:)];
+    longPress.minimumPressDuration = 0.2;
+    longPress.delegate = self;
+    [webView addGestureRecognizer:longPress];
+}
+
+- (void)webkitTouchCallout:(WKWebView *)webView
+{
+    // 不执行前段界面弹出列表的JS代码
+    [webView evaluateJavaScript:@"document.documentElement.style.webkitTouchCallout='none';" completionHandler:nil];
+    [webView evaluateJavaScript:@"document.documentElement.style.webkitUserSelect='none'" completionHandler:nil];
+}
+
+// 是否允许支持多个手势,默认是不支持:NO
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
+    return YES;
+}
+
+// 网页内长按识别二维码
+- (void)webViewHandleLongPress:(UILongPressGestureRecognizer *)sender{
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        
+        CGPoint touchPoint = [sender locationInView:_detailWebView];
+        // 获取长按位置对应的图片url的JS代码
+        NSString *imgJS = [NSString stringWithFormat:@"document.elementFromPoint(%f, %f).src", touchPoint.x, touchPoint.y];
+        // 执行对应的JS代码 获取url
+        [_detailWebView evaluateJavaScript:imgJS completionHandler:^(id _Nullable imgUrl, NSError * _Nullable error) {
+            if (imgUrl) {
+                NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imgUrl]];
+                UIImage *image = [UIImage imageWithData:data];
+                if (!image) {
+                    NSLog(@"读取图片失败");
+                    return;
+                }
+                _saveImage = image;
+                
+                // 禁用选中效果
+                [self webkitTouchCallout:_detailWebView];
+                
+                if ([self isAvailableQRcodeIn:image]) {
+                    [self filterPopViewWithTag:100002 WithTitleArray:[NSMutableArray arrayWithObjects:@"保存图片",@"识别图中二维码",nil]];
+                } else {
+                    [self filterPopViewWithTag:100001 WithTitleArray:[NSMutableArray arrayWithObjects:@"保存图片",nil]];
+                }
+                
+            } else {
+                // 选中效果
+                [_detailWebView evaluateJavaScript:@"document.documentElement.style.webkitUserSelect='text'" completionHandler:nil];
+                [_detailWebView evaluateJavaScript:@"document.documentElement.style.webkitTouchCallout='text'" completionHandler:nil];
+            }
+        }];
+    }
+}
+
+-(void)filterPopViewWithTag:(int)tag WithTitleArray:(NSMutableArray *)titleArray
+{
+    // 初始化弹框 第一个参数是设置距离底部的边距
+    RomAlertView *alertview = [[RomAlertView alloc] initWithMainAlertViewBottomInset:0 Title:nil detailText:nil cancelTitle:nil otherTitles:titleArray];
+    alertview.tag = tag;
+    // 设置弹框的样式
+    alertview.RomMode = RomAlertViewModeBottomTableView;
+    // 设置弹框从什么位置进入 当然也可以设置什么位置退出
+    [alertview setEnterMode:RomAlertEnterModeBottom];
+    // 设置代理
+    [alertview setDelegate:self];
+    // 显示 必须调用 和系统一样
+    [alertview show];
+}
+
+#pragma mark -- RomAlertViewDelegate 弹框识别图中二维码
+// 判断是web网页图片否存在二维码
+- (BOOL)isAvailableQRcodeIn:(UIImage *)img {
+    
+    UIGraphicsBeginImageContextWithOptions(img.size, NO, 3);//0，获取当前屏幕分辨率[UIScreen mainScreen].scale
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [self.view.layer renderInContext:context];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    CIImage *ciImage = [[CIImage alloc] initWithCGImage:image.CGImage options:nil];
+    CIContext *ciContext = [CIContext contextWithOptions:@{kCIContextUseSoftwareRenderer : @(YES)}]; // 软件渲染
+    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:ciContext options:@{CIDetectorAccuracy : CIDetectorAccuracyHigh}];// 二维码识别
+    
+    NSArray *features = [detector featuresInImage:ciImage];
+    if (features.count > 0) {
+        //        for (CIQRCodeFeature *feature in features) {
+        //        NSLog(@"qrCodeUrl = %@",feature.messageString); // 打印二维码中的信息
+        //        qrCodeUrl = feature.messageString;
+        //    }
+        CIQRCodeFeature *feature = [features objectAtIndex:0];
+        qrCodeUrl = [feature.messageString copy];
+        NSLog(@"二维码信息:%@", qrCodeUrl);
+        return YES;
+    } else {
+        NSLog(@"图片中没有二维码");
+        return NO;
+    }
+}
+// 网页内部识别二维码
+- (void)alertview:(RomAlertView *)alertview didSelectWebRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (alertview.tag == 100001) {
+        if ([alertview.otherTitles[indexPath.row]  isEqualToString:@"保存图片"]) {
+            NSLog(@"保存图片");
+            //            UIImageWriteToSavedPhotosAlbum(_saveImage, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+            [self saveWebLongPressed];
+            
+        }
+    } else if (alertview.tag == 100002) {
+        if ([alertview.otherTitles[indexPath.row]  isEqualToString:@"保存图片"]) {
+            NSLog(@"保存图片");
+            //            UIImageWriteToSavedPhotosAlbum(_saveImage, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+            [self saveWebLongPressed];
+            
+        }else if ([alertview.otherTitles[indexPath.row] isEqualToString:@"识别图中二维码"]){
+            NSLog(@"识别图中二维码");
+            
+            ADWebViewViewController *controller = [[ADWebViewViewController alloc] init];
+            controller.m_url = qrCodeUrl;
+            controller.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:controller animated:YES];
+        }
+    }
+}
+// 系统保存图片的方法
+//- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+//    NSString *message = @"Succeed";
+//    if (error) {
+//        message = @"Fail";
+//    }
+//    NSLog(@"save result :%@", message);
+//}
+
+#pragma mark --web保存图片
+//保存
+- (void)saveWebLongPressed {
+    //    if (webPhotoSave == YES) { // 图片已经保存到相册 提示
+    //        [self.view makeToast:@"该图片已经保存到相册" duration:2 position:CSToastPositionCenter];
+    //        return;
+    //    }
+    [self saveWebPhoto];
+}
+
+- (void)saveWebPhoto {
+    
+    PHAuthorizationStatus oldStatus = [PHPhotoLibrary authorizationStatus];
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            switch (status) {
+                case PHAuthorizationStatusAuthorized: {
+                    //  保存图片到相册
+                    [self saveWebImageIntoAlbum];
+                    break;
+                }
+                case PHAuthorizationStatusDenied: {
+                    if (oldStatus == PHAuthorizationStatusNotDetermined) return;
+                    NSLog(@"提醒用户打开相册的访问开关");
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"无法保存"        message:@"请在iPhone的“设置-隐私-照片”选项中，允许访问你的照片。" delegate:self  cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                    [alert show];
+                    break;
+                }
+                case PHAuthorizationStatusRestricted: {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"无法保存"        message:@"因系统原因，无法访问相册！" delegate:self  cancelButtonTitle:@"确定" otherButtonTitles:nil];
+                    [alert show];
+                    break;
+                }
+                default:
+                    break;
+            }
+        });
+    }];
+}
+
+
+// 获得刚才添加到【相机胶卷】中的图片
+- (PHFetchResult<PHAsset *> *)createdAssets {
+    
+    __block NSString *createdAssetId = nil;
+    // 添加图片到【相机胶卷】
+    [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
+        createdAssetId = [PHAssetChangeRequest creationRequestForAssetFromImage:_saveImage].placeholderForCreatedAsset.localIdentifier;
+    } error:nil];
+    if (createdAssetId == nil) return nil;
+    // 在保存完毕后取出图片
+    return [PHAsset fetchAssetsWithLocalIdentifiers:@[createdAssetId] options:nil];
+}
+
+//获得【自定义相册】
+-(PHAssetCollection *)createdCollection {
+    // 获取软件的名字作为相册的标题(如果需求不是要软件名称作为相册名字就可以自己把这里改成想要的名称)
+    NSString *title = [NSBundle mainBundle].infoDictionary[(NSString *)kCFBundleNameKey];
+    // 获得所有的自定义相册
+    PHFetchResult<PHAssetCollection *> *collections = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
+    for (PHAssetCollection *collection in collections) {
+        if ([collection.localizedTitle isEqualToString:title]) {
+            return collection;
+        }
+    }
+    // 代码执行到这里，说明还没有自定义相册
+    __block NSString *createdCollectionId = nil;
+    // 创建一个新的相册
+    [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
+        createdCollectionId = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:title].placeholderForCreatedAssetCollection.localIdentifier;
+    } error:nil];
+    if (createdCollectionId == nil) return nil;
+    // 创建完毕后再取出相册
+    return [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[createdCollectionId] options:nil].firstObject;
+}
+
+//保存图片到相册
+- (void)saveWebImageIntoAlbum {
+    // 获得相片
+    PHFetchResult<PHAsset *> *createdAssets = self.createdAssets;
+    // 获得相册
+    PHAssetCollection *createdCollection = self.createdCollection;
+    if (createdAssets == nil || createdCollection == nil) {
+        
+        [self.view makeToast:@"图片保存失败！" duration:2 position:CSToastPositionCenter];
+        return;
+    }
+    // 将相片添加到相册
+    NSError *error = nil;
+    [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
+        PHAssetCollectionChangeRequest *request = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:createdCollection];
+        [request insertAssets:createdAssets atIndexes:[NSIndexSet indexSetWithIndex:0]];
+    } error:&error];
+    // 保存结果
+    NSString *msg = nil ;
+    if(error){
+        msg = @"图片保存失败！";
+        [self.view makeToast:msg duration:2 position:CSToastPositionCenter];
+    }else{
+        msg = @"已成功保存到系统相册";
+        //        webPhotoSave = YES;
+        [self.view makeToast:msg duration:2 position:CSToastPositionCenter];
+    }
 }
 
 @end

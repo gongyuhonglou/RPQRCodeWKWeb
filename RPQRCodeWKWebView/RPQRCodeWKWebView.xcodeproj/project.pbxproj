@@ -34,6 +34,7 @@
 		04163C432085CBC70074E974 /* NSObject+UserDefined.m in Sources */ = {isa = PBXBuildFile; fileRef = 04163C402085CBC70074E974 /* NSObject+UserDefined.m */; };
 		04163C442085CBC70074E974 /* RPLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04163C412085CBC70074E974 /* RPLabel.m */; };
 		04163C472085CC180074E974 /* UIImage+InsetEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = 04163C452085CC180074E974 /* UIImage+InsetEdge.m */; };
+		043719432089828600C3610D /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = 043719422089828600C3610D /* UIView+Toast.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,8 @@
 		04163C412085CBC70074E974 /* RPLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPLabel.m; sourceTree = "<group>"; };
 		04163C452085CC180074E974 /* UIImage+InsetEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+InsetEdge.m"; sourceTree = "<group>"; };
 		04163C462085CC180074E974 /* UIImage+InsetEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+InsetEdge.h"; sourceTree = "<group>"; };
+		043719412089828600C3610D /* UIView+Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Toast.h"; sourceTree = "<group>"; };
+		043719422089828600C3610D /* UIView+Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Toast.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -241,6 +244,7 @@
 		04163C3B2085CBC70074E974 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				043719402089828600C3610D /* Toast */,
 				04163C3D2085CBC70074E974 /* RPLabel.h */,
 				04163C412085CBC70074E974 /* RPLabel.m */,
 				04163C3E2085CBC70074E974 /* NSObject+UserDefined.h */,
@@ -251,6 +255,15 @@
 				04163C452085CC180074E974 /* UIImage+InsetEdge.m */,
 			);
 			path = Tools;
+			sourceTree = "<group>";
+		};
+		043719402089828600C3610D /* Toast */ = {
+			isa = PBXGroup;
+			children = (
+				043719412089828600C3610D /* UIView+Toast.h */,
+				043719422089828600C3610D /* UIView+Toast.m */,
+			);
+			path = Toast;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -391,6 +404,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				043719432089828600C3610D /* UIView+Toast.m in Sources */,
 				0413B8FF207CA1C600A2A9E9 /* RomCustomMaskView.m in Sources */,
 				0413B901207CA1C600A2A9E9 /* ZXRomUIAlertTool.m in Sources */,
 				0413B8AA207C98A400A2A9E9 /* ViewController.m in Sources */,
