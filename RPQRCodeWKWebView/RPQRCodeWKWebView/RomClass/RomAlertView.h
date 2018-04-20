@@ -302,6 +302,10 @@ typedef void (^selectButtonIndexComplete)(NSInteger index);
  *  @param indexPath 被点击的cell
  */
 - (void)alertview:(RomAlertView *)alertview didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+
+// 增加网页内部弹框代理
+- (void)alertview:(RomAlertView *)alertview didSelectWebRowAtIndexPath:(NSIndexPath *)indexPath;
+
 /**
  *  日期代理事件
  *

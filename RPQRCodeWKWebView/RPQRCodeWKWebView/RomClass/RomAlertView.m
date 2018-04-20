@@ -1792,6 +1792,11 @@
         [_delegate alertview:self didSelectRowAtIndexPath:indexPath];
     }
     NSLog(@"里面打印>>>>>>>>>>>>>%ld",indexPath.row);
+    
+    if ([_delegate respondsToSelector:@selector(alertview:didSelectWebRowAtIndexPath:)]) {
+        [_delegate alertview:self didSelectWebRowAtIndexPath:indexPath];
+        NSLog(@"web里面打印>>>>>>>>>>>>>%ld",indexPath.row);
+    }
     [self hide];
     
 }
