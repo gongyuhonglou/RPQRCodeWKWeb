@@ -1,0 +1,5 @@
+platform:ios,'8.0'
+
+target 'RPQRCodeWKWebView' do
+pod 'SDWebImage', '4.2.3'
+end

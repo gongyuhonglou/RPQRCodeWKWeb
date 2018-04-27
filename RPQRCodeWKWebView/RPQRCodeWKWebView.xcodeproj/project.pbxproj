@@ -34,7 +34,11 @@
 		04163C432085CBC70074E974 /* NSObject+UserDefined.m in Sources */ = {isa = PBXBuildFile; fileRef = 04163C402085CBC70074E974 /* NSObject+UserDefined.m */; };
 		04163C442085CBC70074E974 /* RPLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04163C412085CBC70074E974 /* RPLabel.m */; };
 		04163C472085CC180074E974 /* UIImage+InsetEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = 04163C452085CC180074E974 /* UIImage+InsetEdge.m */; };
+		04323B8E2092D21A001697A3 /* RPScrollContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04323B882092D21A001697A3 /* RPScrollContentView.m */; };
+		04323B8F2092D21A001697A3 /* RPBrowseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04323B892092D21A001697A3 /* RPBrowseViewController.m */; };
+		04323B902092D21A001697A3 /* RPImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04323B8B2092D21A001697A3 /* RPImageView.m */; };
 		043719432089828600C3610D /* UIView+Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = 043719422089828600C3610D /* UIView+Toast.m */; };
+		1AE8B7A0BE918FEE0BABD863 /* libPods-RPQRCodeWKWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 612A71F8EB3623F242839D4A /* libPods-RPQRCodeWKWebView.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,8 +110,17 @@
 		04163C412085CBC70074E974 /* RPLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPLabel.m; sourceTree = "<group>"; };
 		04163C452085CC180074E974 /* UIImage+InsetEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+InsetEdge.m"; sourceTree = "<group>"; };
 		04163C462085CC180074E974 /* UIImage+InsetEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+InsetEdge.h"; sourceTree = "<group>"; };
+		04323B882092D21A001697A3 /* RPScrollContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPScrollContentView.m; sourceTree = "<group>"; };
+		04323B892092D21A001697A3 /* RPBrowseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPBrowseViewController.m; sourceTree = "<group>"; };
+		04323B8A2092D21A001697A3 /* RPBrowseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPBrowseViewController.h; sourceTree = "<group>"; };
+		04323B8B2092D21A001697A3 /* RPImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPImageView.m; sourceTree = "<group>"; };
+		04323B8C2092D21A001697A3 /* RPImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPImageView.h; sourceTree = "<group>"; };
+		04323B8D2092D21A001697A3 /* RPScrollContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPScrollContentView.h; sourceTree = "<group>"; };
 		043719412089828600C3610D /* UIView+Toast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Toast.h"; sourceTree = "<group>"; };
 		043719422089828600C3610D /* UIView+Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Toast.m"; sourceTree = "<group>"; };
+		53E0AC98F964DF6E95067EFD /* Pods-RPQRCodeWKWebView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RPQRCodeWKWebView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RPQRCodeWKWebView/Pods-RPQRCodeWKWebView.debug.xcconfig"; sourceTree = "<group>"; };
+		612A71F8EB3623F242839D4A /* libPods-RPQRCodeWKWebView.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RPQRCodeWKWebView.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		644326496EF7EDE7B8EA25D5 /* Pods-RPQRCodeWKWebView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RPQRCodeWKWebView.release.xcconfig"; path = "Pods/Target Support Files/Pods-RPQRCodeWKWebView/Pods-RPQRCodeWKWebView.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +128,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1AE8B7A0BE918FEE0BABD863 /* libPods-RPQRCodeWKWebView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,6 +156,8 @@
 				0413B8BD207C98A400A2A9E9 /* RPQRCodeWKWebViewTests */,
 				0413B8C8207C98A400A2A9E9 /* RPQRCodeWKWebViewUITests */,
 				0413B8A3207C98A400A2A9E9 /* Products */,
+				215475DFC25E09279DF25B0A /* Pods */,
+				A0F9F831DA2C3F05CCA9C7E1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -161,6 +177,7 @@
 				0413B917207CB3E200A2A9E9 /* img */,
 				0413B8EE207CA1C600A2A9E9 /* RomClass */,
 				0413B8E7207C9F5C00A2A9E9 /* MBProgressHUD */,
+				04323B872092D161001697A3 /* ImageBrowser */,
 				0413B8A5207C98A400A2A9E9 /* AppDelegate.h */,
 				0413B8A6207C98A400A2A9E9 /* AppDelegate.m */,
 				0413B8A8207C98A400A2A9E9 /* ViewController.h */,
@@ -257,6 +274,19 @@
 			path = Tools;
 			sourceTree = "<group>";
 		};
+		04323B872092D161001697A3 /* ImageBrowser */ = {
+			isa = PBXGroup;
+			children = (
+				04323B8A2092D21A001697A3 /* RPBrowseViewController.h */,
+				04323B892092D21A001697A3 /* RPBrowseViewController.m */,
+				04323B8C2092D21A001697A3 /* RPImageView.h */,
+				04323B8B2092D21A001697A3 /* RPImageView.m */,
+				04323B8D2092D21A001697A3 /* RPScrollContentView.h */,
+				04323B882092D21A001697A3 /* RPScrollContentView.m */,
+			);
+			path = ImageBrowser;
+			sourceTree = "<group>";
+		};
 		043719402089828600C3610D /* Toast */ = {
 			isa = PBXGroup;
 			children = (
@@ -266,6 +296,23 @@
 			path = Toast;
 			sourceTree = "<group>";
 		};
+		215475DFC25E09279DF25B0A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				53E0AC98F964DF6E95067EFD /* Pods-RPQRCodeWKWebView.debug.xcconfig */,
+				644326496EF7EDE7B8EA25D5 /* Pods-RPQRCodeWKWebView.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		A0F9F831DA2C3F05CCA9C7E1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				612A71F8EB3623F242839D4A /* libPods-RPQRCodeWKWebView.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -273,6 +320,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0413B8CE207C98A400A2A9E9 /* Build configuration list for PBXNativeTarget "RPQRCodeWKWebView" */;
 			buildPhases = (
+				EA5E61E6F301A18EEB1A26FE /* [CP] Check Pods Manifest.lock */,
 				0413B89E207C98A400A2A9E9 /* Sources */,
 				0413B89F207C98A400A2A9E9 /* Frameworks */,
 				0413B8A0207C98A400A2A9E9 /* Resources */,
@@ -399,11 +447,33 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		EA5E61E6F301A18EEB1A26FE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RPQRCodeWKWebView-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		0413B89E207C98A400A2A9E9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04323B8E2092D21A001697A3 /* RPScrollContentView.m in Sources */,
 				043719432089828600C3610D /* UIView+Toast.m in Sources */,
 				0413B8FF207CA1C600A2A9E9 /* RomCustomMaskView.m in Sources */,
 				0413B901207CA1C600A2A9E9 /* ZXRomUIAlertTool.m in Sources */,
@@ -413,7 +483,9 @@
 				0413B8FD207CA1C600A2A9E9 /* RomCustomAlertViewCell.m in Sources */,
 				04163C442085CBC70074E974 /* RPLabel.m in Sources */,
 				0413B8FC207CA1C600A2A9E9 /* RomAlertView.m in Sources */,
+				04323B8F2092D21A001697A3 /* RPBrowseViewController.m in Sources */,
 				0413B8FE207CA1C600A2A9E9 /* RomCustomAlertViewTableVC.m in Sources */,
+				04323B902092D21A001697A3 /* RPImageView.m in Sources */,
 				04163C432085CBC70074E974 /* NSObject+UserDefined.m in Sources */,
 				0413B8EC207C9F5C00A2A9E9 /* MBProgressHUD+Add.m in Sources */,
 				0413B8B5207C98A400A2A9E9 /* main.m in Sources */,
@@ -582,6 +654,7 @@
 		};
 		0413B8CF207C98A400A2A9E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 53E0AC98F964DF6E95067EFD /* Pods-RPQRCodeWKWebView.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -596,6 +669,7 @@
 		};
 		0413B8D0207C98A400A2A9E9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 644326496EF7EDE7B8EA25D5 /* Pods-RPQRCodeWKWebView.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

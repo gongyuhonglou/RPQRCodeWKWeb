@@ -155,6 +155,7 @@
     
     // 识别二维码跳转;不是链接显示内容点击网址跳转
     if ([self.m_url hasPrefix:@"http"]) {
+        //        NSString *urlStr = [self.m_url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         // 解决url包含中文不能编码的问题
         NSString *urlStr = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(CFStringRef)self.m_url,(CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]",NULL,kCFStringEncodingUTF8));
         NSURL *url = [NSURL URLWithString:urlStr];
@@ -173,7 +174,10 @@
             QRurlStr = [NSString stringWithFormat:@"http://%@",[NSString stringWithFormat:@"%@",self.m_url]];
         } else {
             // 文字html可拷贝，查询
-            QRurlStr = [NSString stringWithFormat:@"<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'><style>*{margin:5px;padding:0px;}</style><title></title></head<body><pre>%@</pre></body></html>",[NSString stringWithFormat:@"%@",self.m_url]];
+            // @"<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><meta name='viewport' content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no'><style>*{margin:5px;padding:0px;}</style><title></title></head<body><pre>%@</pre></body></html>"
+            // 解决html适配屏幕的宽度和保留源文件的格式显示
+            QRurlStr = [NSString stringWithFormat:
+                        @"<html><head><meta charset='UTF-8'><meta name='viewport' content='initial-scale=1,maximum-scale=1, minimum-scale=1'><meta name='apple-mobile-web-app-capable' content='yes'><meta name='apple-mobile-web-app-status-bar-style' content='black'><meta name='format-detection' content='telephone=no'><title></title><style>*{margin: 0;padding: 0;box-sizing: border-box;}pre {/* width: 6.4rem; */padding: 10px;font-size: 15px;color: #333;text-align: justify;white-space: pre-wrap; /*css-3*/white-space: -moz-pre-wrap; /*Mozilla,since1999*/ white-space: -pre-wrap; /*Opera4-6*/white-space: -o-pre-wrap; /*Opera7*/word-wrap: break-word; /*InternetExplorer5.5+*/ }</style></head><body><pre>%@</pre></body><script>(function() { function getViewPort()  {if(document.compatMode == 'BackCompat') { return {width: document.body.clientWidth,height: document.body.clientHeight}; } else {return {width: document.documentElement.clientWidth,height: document.documentElement.clientHeight};} }function screenZoom() {var _obj = getViewPort(); var Width = _obj.width;var Height = _obj.height;if (Width>640) { Width = 640;}document.documentElement.style.fontSize = Width/6.4 + 'px';}screenZoom();window.onresize = function() {screenZoom();};})();</script></html>",[NSString stringWithFormat:@"%@",self.m_url]];
             [_detailWebView loadHTMLString:QRurlStr  baseURL:Nil];
         }
     }

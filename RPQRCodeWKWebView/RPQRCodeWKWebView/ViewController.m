@@ -7,10 +7,10 @@
 //
 
 #import "ViewController.h"
+#import "RPBrowseViewController.h"
 #import "AppDelegate.h"
 #import "ADWebViewViewController.h"
 #import <Photos/Photos.h>
-
 
 @interface ViewController ()<RomAlertViewDelegate>
 {
@@ -23,23 +23,60 @@
 @end
 
 @implementation ViewController
-
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
     self.title = @"长按图片识别二维码";
     
-    img = [[UIImageView alloc] initWithFrame: CGRectMake(50, 64+50, 240, 400)];
+    UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(100, 100, 150, 40);
+    [button setTitle:@"点我点我~_~!!" forState:UIControlStateNormal];
+    button.backgroundColor = [UIColor lightGrayColor];
+    button.layer.borderWidth = 0.5;
+    button.layer.cornerRadius = 10;
+    button.layer.borderColor = [UIColor redColor].CGColor;
+    [button addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
+    
+    
+    img = [[UIImageView alloc] initWithFrame: CGRectMake(50, 64+100, 240, 400)];
     img.image = [UIImage imageNamed:@"3.jpg"];//2.jpg,3.jpg,4.jpg,5.jpg
     img.userInteractionEnabled = YES;
     [self.view addSubview:img];
     
-    // 长按图片识别二维码]
+    // 长按图片识别二维码
     UILongPressGestureRecognizer *QrCodeTap = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(QrCodeClick:)];
     [img addGestureRecognizer:QrCodeTap];
 }
 
+- (void)buttonClick:(UIButton*)sender
+{
+    
+    NSArray *networkImages=@[@"1.jpg", @"2.jpg", @"3.jpg", @"4.jpg", @"5.jpg"];
+    
+    RPBrowseViewController * RPb = [RPBrowseViewController showInController:self imageDataSource:networkImages index:2];
+    UIPageControl * control = [[UIPageControl alloc]initWithFrame:CGRectMake(0,__gTopViewHeight-40, __gScreenWidth, 20)];
+    control.pageIndicatorTintColor = [UIColor redColor];
+    control.currentPageIndicatorTintColor = [UIColor yellowColor];
+    
+    [RPb customPageView:control scrollPageCompletion:^(NSInteger totalPage, NSInteger currentPage, UIView *pageView) {
+        
+        ((UIPageControl*)pageView).numberOfPages = totalPage;
+        ((UIPageControl*)pageView).currentPage = currentPage;
+        
+    }];
+    
+    [RPb showAnimationWithType:BrowsePushType];
+
+}
+
+// 长按图片识别二维码
 - (void)QrCodeClick:(UILongPressGestureRecognizer *)pressSender {
     
     if (pressSender.state != UIGestureRecognizerStateBegan) {
@@ -106,17 +143,17 @@
             controller.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:controller animated:YES];
             
-//            AppDelegate *delegate=(AppDelegate *)[[UIApplication sharedApplication]delegate];
-//            if([delegate.window.rootViewController isKindOfClass:[UITabBarController class]]){
-//                UITabBarController *tabBarController = (UITabBarController *)delegate.window.rootViewController;
-//                UINavigationController *navigationController = [tabBarController selectedViewController];
-//                UIViewController *vc = navigationController.topViewController;
-//                //对结果进行处理跳转网页
-//                ADWebViewViewController *controller = [[ADWebViewViewController alloc] init];
-//                controller.m_url = qrCodeUrl;
-//                controller.hidesBottomBarWhenPushed = YES;
-//                [vc.navigationController pushViewController:controller animated:YES];
-//            }
+            //            AppDelegate *delegate=(AppDelegate *)[[UIApplication sharedApplication]delegate];
+            //            if([delegate.window.rootViewController isKindOfClass:[UITabBarController class]]){
+            //                UITabBarController *tabBarController = (UITabBarController *)delegate.window.rootViewController;
+            //                UINavigationController *navigationController = [tabBarController selectedViewController];
+            //                UIViewController *vc = navigationController.topViewController;
+            //                //对结果进行处理跳转网页
+            //                ADWebViewViewController *controller = [[ADWebViewViewController alloc] init];
+            //                controller.m_url = qrCodeUrl;
+            //                controller.hidesBottomBarWhenPushed = YES;
+            //                [vc.navigationController pushViewController:controller animated:YES];
+            //            }
         }
     }
 }
@@ -143,7 +180,7 @@
 
 #pragma mark -- 保存图片
 - (void)savePhoto {
-
+    
     PHAuthorizationStatus oldStatus = [PHPhotoLibrary authorizationStatus];
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -178,7 +215,7 @@
 // 获得刚才添加到【相机胶卷】中的图片
 -(PHFetchResult<PHAsset *> *)createdAssets
 {
-//    MJPhoto *photo = _photos[_currentPhotoIndex];
+    //    MJPhoto *photo = _photos[_currentPhotoIndex];
     __block NSString *createdAssetId = nil;
     // 添加图片到【相机胶卷】
     [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
@@ -223,7 +260,7 @@
     PHAssetCollection *createdCollection = self.createdCollection;
     if (createdAssets == nil || createdCollection == nil) {
         
-//        [self.view makeToast:@"图片保存失败！" duration:2 position:CSToastPositionCenter];
+        //        [self.view makeToast:@"图片保存失败！" duration:2 position:CSToastPositionCenter];
         return;
     }
     // 将相片添加到相册
@@ -238,13 +275,13 @@
     if(error){
         msg = @"图片保存失败！";
         
-//        [self.view makeToast:msg duration:2 position:CSToastPositionCenter];
+        //        [self.view makeToast:msg duration:2 position:CSToastPositionCenter];
         
     }else{
         msg = @"已成功保存到系统相册";
-//        MJPhoto *photo = _photos[_currentPhotoIndex];
-//        photo.save = YES;
-//        [self.view makeToast:msg duration:2 position:CSToastPositionCenter];
+        //        MJPhoto *photo = _photos[_currentPhotoIndex];
+        //        photo.save = YES;
+        //        [self.view makeToast:msg duration:2 position:CSToastPositionCenter];
         
     }
     

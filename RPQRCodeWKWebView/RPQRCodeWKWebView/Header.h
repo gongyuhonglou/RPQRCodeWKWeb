@@ -24,4 +24,26 @@
 #import "RPLabel.h"
 #import "MBProgressHUD.h"
 
+
+/******************       ImageBrowser--begin             *************************/
+#define WINDOW [UIApplication sharedApplication].delegate.window
+
+#define AnimationDuration 0.75
+
+typedef NS_ENUM(NSInteger,BrowseShowType)
+{
+    BrowseNoneType = 0,
+    
+    BrowsePushType,
+    
+    BrowseModalType,
+    
+    BrowseZoomType
+};
+
+typedef void(^scrollBlock)(NSInteger totalPage,NSInteger currentPage,UIView*pageView);
+
+/******************        end            *************************/
+
+
 #endif /* Header_h */
