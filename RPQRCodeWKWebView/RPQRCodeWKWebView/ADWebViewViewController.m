@@ -656,11 +656,19 @@
 // 判断是web网页图片否存在二维码
 - (BOOL)isAvailableQRcodeIn:(UIImage *)img {
     
-    UIGraphicsBeginImageContextWithOptions(img.size, NO, 3);//0，获取当前屏幕分辨率[UIScreen mainScreen].scale
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    [self.view.layer renderInContext:context];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+    //方法：一
+    //    UIGraphicsBeginImageContextWithOptions(img.size, NO, 3);//0，获取当前屏幕分辨率[UIScreen mainScreen].scale
+    //    CGContextRef context = UIGraphicsGetCurrentContext();
+    //    [self.view.layer renderInContext:context];
+    //    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    //    UIGraphicsEndImageContext();
+    
+    //方法：二
+    UIImage *image = [self snapshot:self.view];
+    
+    //方法：三
+    //    UIImage *image = [self imageByInsetEdge:UIEdgeInsetsMake(-20, -20, -20, -20) withColor:[UIColor lightGrayColor] withImage:img];
+    
     
     CIImage *ciImage = [[CIImage alloc] initWithCGImage:image.CGImage options:nil];
     CIContext *ciContext = [CIContext contextWithOptions:@{kCIContextUseSoftwareRenderer : @(YES)}]; // 软件渲染
@@ -681,6 +689,50 @@
         return NO;
     }
 }
+
+// you can also implement by UIView category
+- (UIImage *)snapshot:(UIView *)view
+{
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, 3);//view.bounds.size, YES, view.window.screen.scale
+    
+    if ([view respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)]) {
+        [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+    }
+    UIImage* image = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+// you can also implement by UIImage category
+- (UIImage *)imageByInsetEdge:(UIEdgeInsets)insets withColor:(UIColor *)color withImage:(UIImage *)image
+{
+    CGSize size = image.size;
+    size.width -= insets.left + insets.right;
+    size.height -= insets.top + insets.bottom;
+    if (size.width <= 0 || size.height <= 0) {
+        return nil;
+    }
+    CGRect rect = CGRectMake(-insets.left, -insets.top, image.size.width, image.size.height);
+    UIGraphicsBeginImageContextWithOptions(size, NO, image.scale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    if (color) {
+        CGContextSetFillColorWithColor(context, color.CGColor);
+        CGMutablePathRef path = CGPathCreateMutable();
+        CGPathAddRect(path, NULL, CGRectMake(0, 0, size.width, size.height));
+        CGPathAddRect(path, NULL, rect);
+        CGContextAddPath(context, path);
+        CGContextEOFillPath(context);
+        CGPathRelease(path);
+    }
+    [image drawInRect:rect];
+    UIImage *insetEdgedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return insetEdgedImage;
+}
+
+
 // 网页内部识别二维码
 - (void)alertview:(RomAlertView *)alertview didSelectWebRowAtIndexPath:(NSIndexPath *)indexPath
 {
